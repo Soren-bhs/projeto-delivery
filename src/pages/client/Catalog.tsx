@@ -1,5 +1,7 @@
 export function Catalog() {
     return (
-        <h1>Catalogo</h1>
+        <div>
+            <h1>Oi</h1>
+        </div>
     )
 }

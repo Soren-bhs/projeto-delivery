@@ -3,7 +3,7 @@ import { ClientHeader } from './ClientHeader';
 
 export function ClientLayout() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div>
       <ClientHeader />
       <main>
         <Outlet />

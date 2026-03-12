@@ -22,7 +22,7 @@ export function Header() {
                 </Link>
 
                 <nav className='hidden lg:flex lg:gap-10 items-center'>
-                    <Link to="/home" className={linkStyle('/home')}>
+                    <Link to="/Catalog" className={linkStyle('/Catalog')}>
                         Delivery
                     </Link>
                     <Link to="/SalesOverview" className={linkStyle('/SalesOverview')}>

@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* O azul do Header/Design que você curtiu */
+  --color-food-navy: #0f172a; 
+  /* Um azul um pouquinho mais claro para cards/inputs destacarem no fundo */
+  --color-food-soft: #1e293b; 
+}
+
+body {
+  @apply bg-zinc-100 text-zinc-900 transition-colors duration-300;
+}
+
+.dark body {
+  /* Agora o fundo do site será o azul do Header, não mais aquele preto */
+  @apply bg-food-navy text-zinc-100;
+}
