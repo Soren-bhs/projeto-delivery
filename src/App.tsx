@@ -1,13 +1,21 @@
 import { Routes, Route } from 'react-router-dom';
 
+import { Layout } from './components/admin/Layout'
+import { ProductRegistration } from './pages/admin/ProductRegistration';
+import { SalesOverview } from './pages/admin/SalesOverview';
+import { Catalog } from './pages/client/Catalog';
+
 export default function App() {
   return (
-    <div className="min-h-screen bg-zinc-900 text-zinc-100">
-      <header className="p-6 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-black text-sky-500">SOREN<span className="text-white">TEMPLATE</span></h1>
-        </div>
-      </header>
-    </div>
+    <Layout>
+      <Routes>
+        {/* Agora o Admin é a página principal */}
+        <Route path="/" element={<ProductRegistration />} />
+        
+        {/* Padronizando para letras minúsculas e nomes consistentes */}
+        <Route path="/SalesOverview" element={<SalesOverview />} />
+        <Route path="/Catalog" element={<Catalog />} />
+      </Routes>
+    </Layout>
   );
 }
