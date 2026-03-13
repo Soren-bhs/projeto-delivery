@@ -12,7 +12,7 @@ export function Footer() {
     <footer className="fixed bottom-0 left-0 right-0 bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-800/50 p-4 lg:hidden z-50">
       <nav className="max-w-6xl mx-auto flex justify-around items-center">
         <Link to="/Catalog" className={getStyle('/Catalog')}>
-          <span className="text-xs font-bold uppercase tracking-widest">Site</span>
+          <span className="text-xs font-bold uppercase tracking-widest">Delivery</span>
         </Link>
 
         <Link to="/" className={getStyle('/')}>
