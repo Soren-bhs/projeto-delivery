@@ -1,5 +1,4 @@
 import { useState } from "react"
-import fotoBruno from "../../assets/bruno.jpeg"
 
 /**
  * Representa um produto do cardápio.
@@ -11,7 +10,11 @@ type Produto = {
     descricao: string;
     valor: number;
     imagem: string;
+    categoria: string;
 }
+
+/** Categorias disponíveis no sistema. @todo Virá do banco de dados futuramente. */
+const CATEGORIAS = ["Categoria", "Pizzas", "Bebidas", "Doces", "Lanches"];
 
 /**
  * Dados de exemplo para desenvolvimento.
@@ -21,17 +24,35 @@ function prod(): Produto[] {
     return [
         {
             id: 1,
-            nome: "Coca cola lata 350ml",
-            descricao: "Bebida cola cola lata com 350ml",
-            valor: 5.99,
-            imagem: "https://ogimg.infoglobo.com.br/in/21721531-da7-ee7/FT1086A/nova-lata-da-coca-cola.jpg"
+            nome: "Pizza Margherita",
+            descricao: "Pizza clássica com molho de tomate, mussarela e manjericão fresco",
+            valor: 45.90,
+            imagem: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQH5hfEUMPzjXMou1vLBOiPsLuN3cBhPJml3w&s",
+            categoria: "Pizzas"
         },
         {
             id: 2,
-            nome: "Bruninho",
-            descricao: "Compra o Bruninho ele é bem legal",
-            valor: 2.20,
-            imagem: fotoBruno
+            nome: "Coca-Cola Lata 350ml",
+            descricao: "Refrigerante gelado, lata de 350ml",
+            valor: 5.99,
+            imagem: "https://files.tiker.com.br/losmuchachos/produtos/lata-de-cocacola-com-gelo-esma-1764184485566-00e7bdc5.webp",
+            categoria: "Bebidas"
+        },
+        {
+            id: 3,
+            nome: "Brigadeiro Gourmet",
+            descricao: "Brigadeiro artesanal com granulado belga e recheio cremoso",
+            valor: 8.50,
+            imagem: "https://www.receitasnestle.com.br/sites/default/files/styles/recipe_detail_desktop_new/public/srh_recipes/585f4b6718cb3fad169e44b00868e5e5.jpg?itok=fmi31RTw",
+            categoria: "Doces"
+        },
+        {
+            id: 4,
+            nome: "X-Burguer Duplo",
+            descricao: "Dois blends de carne, queijo cheddar, alface, tomate e molho especial",
+            valor: 32.90,
+            imagem: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPJyZv8-FULGu9PWRfsf2RiO1Bg06-tmV-lg&s",
+            categoria: "Lanches"
         }
     ]
 }
@@ -51,6 +72,8 @@ export function ProductRegistration() {
     const [descricao, setDescricao] = useState<string>("");
     const [imagem, setImagem] = useState<string>("");
     const [valor, setValor] = useState<number | "">("");
+    const [categoria, setCategoria] = useState<string>(CATEGORIAS[0]);
+    const [dropdownAberto, setDropdownAberto] = useState(false);
 
     // Lista de produtos exibida no grid. Inicializada com dados de exemplo.
     const [produtos, setProdutos] = useState<Produto[]>(prod());
@@ -79,11 +102,12 @@ export function ProductRegistration() {
             nome,
             descricao,
             valor: Number(valor),
-            imagem
+            imagem,
+            categoria
         };
 
         setProdutos([...produtos, novoProduto]);
-        setId(""); setNome(""); setDescricao(""); setImagem(""); setValor("");
+        setId(""); setNome(""); setDescricao(""); setImagem(""); setValor(""); setCategoria(CATEGORIAS[0]);
     }
 
     /**
@@ -170,6 +194,35 @@ export function ProductRegistration() {
                                 type="text" placeholder="URL da Imagem" value={imagem}
                                 onChange={(e) => setImagem(e.target.value)}
                             />
+                            {/* Dropdown customizado de categorias — estilize à vontade */}
+                            <div className="relative w-full">
+                                {/* Botão que abre/fecha a lista */}
+                                <div
+                                    className="w-full border border-zinc-700 p-3 rounded-lg bg-zinc-950 text-white cursor-pointer flex justify-between items-center"
+                                    onClick={() => setDropdownAberto(!dropdownAberto)}
+                                >
+                                    <span>{categoria}</span>
+                                    <span className="text-zinc-400 text-xs">{dropdownAberto ? "▲" : "▼"}</span>
+                                </div>
+
+                                {/* Lista de opções — só aparece quando dropdownAberto for true */}
+                                {dropdownAberto && (
+                                    <ul className="absolute z-10 w-full mt-1 bg-zinc-900 border border-zinc-700 rounded-lg overflow-hidden">
+                                        {CATEGORIAS.filter((cat) => cat !== "Categoria").map((cat) => (
+                                            <li
+                                                key={cat}
+                                                className="p-3 text-white cursor-pointer hover:bg-zinc-700 transition-colors"
+                                                onClick={() => {
+                                                    setCategoria(cat);
+                                                    setDropdownAberto(false);
+                                                }}
+                                            >
+                                                {cat}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
                             <button
                                 className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 rounded-xl mt-2 transition-all active:scale-95 shadow-lg shadow-emerald-900/20"
                                 onClick={adicionarProdutos}
