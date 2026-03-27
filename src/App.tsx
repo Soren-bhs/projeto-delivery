@@ -6,6 +6,7 @@ import { ClientLayout } from './components/client/ClientLayout';
 import { ProductRegistration } from './pages/admin/ProductRegistration';
 import { SalesOverview } from './pages/admin/SalesOverview';
 import { Catalog } from './pages/client/Catalog';
+import { Cart } from './pages/client/Cart';
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
       {/* --- ROTAS DO CLIENTE --- */}
       <Route element={<ClientLayout />}>
         <Route path="/Catalog" element={<Catalog />} />
+        <Route path="/Cart" element={<Cart />} />
       </Route>
 
       {/* --- ROTAS DO ADMIN --- */}

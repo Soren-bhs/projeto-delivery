@@ -1,7 +1,10 @@
 import { useState } from "react"
 import fotoBruno from "../../assets/bruno.jpeg"
 
-// Definição do Tipo do Produto
+/**
+ * Representa um produto do cardápio.
+ * Futuramente será substituído pelo modelo vindo do banco de dados.
+ */
 type Produto = {
     id: number;
     nome: string;
@@ -10,41 +13,61 @@ type Produto = {
     imagem: string;
 }
 
-function prod(): Produto[] { 
+/**
+ * Dados de exemplo para desenvolvimento.
+ * @todo Remover quando a integração com o banco de dados estiver pronta.
+ */
+function prod(): Produto[] {
     return [
         {
-            id: 1, 
-            nome: "Coca cola lata 350ml", 
-            descricao: "Bebida cola cola lata com 350ml", 
+            id: 1,
+            nome: "Coca cola lata 350ml",
+            descricao: "Bebida cola cola lata com 350ml",
             valor: 5.99,
             imagem: "https://ogimg.infoglobo.com.br/in/21721531-da7-ee7/FT1086A/nova-lata-da-coca-cola.jpg"
         },
         {
-            id: 2, 
-            nome: "Bruninho", 
-            descricao: "Compra o Bruninho ele é bem legal", 
+            id: 2,
+            nome: "Bruninho",
+            descricao: "Compra o Bruninho ele é bem legal",
             valor: 2.20,
             imagem: fotoBruno
         }
     ]
 }
 
+/**
+ * Página de administração para gerenciamento do cardápio.
+ * Permite cadastrar, editar e excluir produtos.
+ *
+ * Layout desktop: 3 colunas (formulário | preview | dashboard).
+ * Layout mobile: empilhado verticalmente.
+ */
 export function ProductRegistration() {
-    // --- ESTADOS DO FORMULÁRIO ---
+
+    // --- ESTADOS DO FORMULÁRIO DE CADASTRO ---
     const [id, setId] = useState<number | "">("");
     const [nome, setNome] = useState<string>("");
     const [descricao, setDescricao] = useState<string>("");
     const [imagem, setImagem] = useState<string>("");
     const [valor, setValor] = useState<number | "">("");
+
+    // Lista de produtos exibida no grid. Inicializada com dados de exemplo.
     const [produtos, setProdutos] = useState<Produto[]>(prod());
 
-    // --- ESTADOS PARA EDIÇÃO ---
+    // --- ESTADOS DO MODO DE EDIÇÃO INLINE ---
+    // Controla qual produto está sendo editado. null = nenhum.
     const [idEditando, setIdEditando] = useState<number | null>(null);
     const [editNome, setEditNome] = useState("");
     const [editDesc, setEditDesc] = useState("");
     const [editPreco, setEditPreco] = useState<number | "">("");
 
-    // --- FUNÇÕES DE LÓGICA ---
+    // --- LÓGICA DE NEGÓCIO ---
+
+    /**
+     * Valida os campos e adiciona um novo produto à lista.
+     * Limpa o formulário após o cadastro bem-sucedido.
+     */
     function adicionarProdutos() {
         if (!nome || !valor || !imagem || !descricao || !id) {
             alert("Preencha todos os campos corretamente.");
@@ -60,19 +83,22 @@ export function ProductRegistration() {
         };
 
         setProdutos([...produtos, novoProduto]);
-        
-        // Limpar campos após adicionar
         setId(""); setNome(""); setDescricao(""); setImagem(""); setValor("");
     }
 
+    /**
+     * Aplica as alterações feitas no modo de edição inline.
+     * Mantém o valor original caso o campo tenha sido deixado em branco.
+     * @param id - ID do produto a ser atualizado.
+     */
     function confirmarAlteracao(id: number) {
         const produtosAtualizados = produtos.map(p => {
             if (p.id === id) {
-                return { 
-                    ...p, 
-                    nome: editNome || p.nome, 
-                    descricao: editDesc || p.descricao, 
-                    valor: editPreco !== "" ? Number(editPreco) : p.valor 
+                return {
+                    ...p,
+                    nome: editNome || p.nome,
+                    descricao: editDesc || p.descricao,
+                    valor: editPreco !== "" ? Number(editPreco) : p.valor
                 };
             }
             return p;
@@ -81,20 +107,24 @@ export function ProductRegistration() {
         setIdEditando(null);
     }
 
-        function deletarProduto(id: number) {
-            const novaLista = produtos.filter((produto) => produto.id !== id);
-            setProdutos(novaLista);
-        }
+    /**
+     * Remove um produto da lista pelo seu ID.
+     * @param id - ID do produto a ser excluído.
+     */
+    function deletarProduto(id: number) {
+        const novaLista = produtos.filter((produto) => produto.id !== id);
+        setProdutos(novaLista);
+    }
 
-    // --- VARIÁVEIS AUXILIARES ---
+    // --- DADOS DERIVADOS PARA O DASHBOARD ---
     const totalProdutos = produtos.length;
     const ultimoAdicionado = produtos.length > 0 ? produtos[produtos.length - 1].nome : "Nenhum";
 
     return (
         <div className="min-h-screen bg-black text-white p-4 lg:p-8">
             <div className="max-w-7xl mx-auto">
-                
-                {/* HEADER */}
+
+                {/* Cabeçalho da página */}
                 <div className="flex justify-center items-center mb-8">
                     <div className="h-px bg-zinc-800 grow"></div>
                     <h1 className="text-3xl font-black text-sky-500 tracking-tighter mx-4">
@@ -103,7 +133,7 @@ export function ProductRegistration() {
                     <div className="h-px bg-zinc-800 grow"></div>
                 </div>
 
-                {/* PAINEL PRINCIPAL: 3 COLUNAS NO DESKTOP */}
+                {/* Painel principal: 3 colunas no desktop, empilhado no mobile */}
                 <div className="p-6 border border-zinc-800 rounded-2xl bg-zinc-900/50 shadow-2xl">
                     <h2 className="text-xl font-bold mb-6 text-zinc-100 flex items-center gap-2">
                         <span className="w-2 h-6 bg-sky-500 rounded-full"></span>
@@ -111,31 +141,31 @@ export function ProductRegistration() {
                     </h2>
 
                     <div className="flex flex-col lg:flex-row gap-8">
-                        
-                        {/* COLUNA 1: FORMULÁRIO DE CADASTRO */}
+
+                        {/* Coluna 1: Formulário de cadastro de novo produto */}
                         <div className="w-full lg:w-1/3 flex flex-col gap-3">
                             <label className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Novo Produto</label>
-                            <input 
+                            <input
                                 className="w-full border border-zinc-700 p-3 rounded-lg bg-zinc-950 text-white focus:ring-2 ring-sky-500 outline-none transition-all"
                                 type="number" placeholder="ID (ex: 102)" value={id}
                                 onChange={(e) => setId(e.target.value === "" ? "" : Number(e.target.value))}
                             />
-                            <input 
+                            <input
                                 className="w-full border border-zinc-700 p-3 rounded-lg bg-zinc-950 text-white focus:ring-2 ring-sky-500 outline-none"
                                 type="text" placeholder="Nome do Produto" value={nome}
                                 onChange={(e) => setNome(e.target.value)}
                             />
-                            <textarea 
+                            <textarea
                                 className="w-full border border-zinc-700 p-3 rounded-lg bg-zinc-950 text-white focus:ring-2 ring-sky-500 outline-none h-24 resize-none"
                                 placeholder="Descrição do produto..." value={descricao}
                                 onChange={(e) => setDescricao(e.target.value)}
                             />
-                            <input 
+                            <input
                                 className="w-full border border-zinc-700 p-3 rounded-lg bg-zinc-950 text-white focus:ring-2 ring-sky-500 outline-none"
                                 type="number" placeholder="Preço (R$)" value={valor}
                                 onChange={(e) => setValor(e.target.value === "" ? "" : Number(e.target.value))}
                             />
-                            <input 
+                            <input
                                 className="w-full border border-zinc-700 p-3 rounded-lg bg-zinc-950 text-white focus:ring-2 ring-sky-500 outline-none"
                                 type="text" placeholder="URL da Imagem" value={imagem}
                                 onChange={(e) => setImagem(e.target.value)}
@@ -148,9 +178,10 @@ export function ProductRegistration() {
                             </button>
                         </div>
 
-                        {/* COLUNA 2: PREVIEW EM TEMPO REAL */}
+                        {/* Coluna 2: Preview em tempo real — reflete o que o cliente verá */}
                         <div className="w-full lg:w-1/3">
                             <label className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest block mb-3">Prévia do Cliente</label>
+                            {/* sticky top-4 mantém o preview visível enquanto o admin rola a página */}
                             <div className="border border-zinc-700 rounded-2xl overflow-hidden bg-zinc-900 shadow-2xl sticky top-4">
                                 {imagem ? (
                                     <img className="w-full h-56 object-cover" src={imagem} alt="Preview" />
@@ -170,10 +201,10 @@ export function ProductRegistration() {
                             </div>
                         </div>
 
-                        {/* COLUNA 3: DASHBOARD / STATUS */}
+                        {/* Coluna 3: Dashboard de resumo — visível apenas no desktop */}
                         <div className="hidden lg:flex w-full lg:w-1/3 flex-col gap-4">
                             <label className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Resumo do Inventário</label>
-                            
+
                             <div className="bg-zinc-950 p-5 rounded-xl border border-zinc-800">
                                 <p className="text-zinc-500 text-xs uppercase font-bold">Total Cadastrado</p>
                                 <p className="text-4xl font-black text-sky-500">{totalProdutos}</p>
@@ -199,32 +230,35 @@ export function ProductRegistration() {
                     </div>
                 </div>
 
-                {/* SEÇÃO DE LISTAGEM - GRID DE PRODUTOS */}
+                {/* Grid de produtos cadastrados */}
                 <div className="mt-12">
                     <div className="flex items-center gap-4 mb-8">
                         <div className="h-px bg-zinc-800 grow"></div>
                         <h4 className="text-2xl font-black text-emerald-500">PRODUTOS <span className="text-white">CADASTRADOS</span></h4>
                         <div className="h-px bg-zinc-800 grow"></div>
                     </div>
-                    
+
+                    {/* 1 coluna no mobile, 2 no tablet, 4 no desktop */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {produtos.map((produto) => (
                             <div key={produto.id} className="border border-zinc-800 rounded-xl bg-zinc-900 overflow-hidden flex flex-col hover:border-zinc-600 transition-colors">
-                                
+
+                                {/* Alterna entre o card de visualização e o formulário de edição inline */}
                                 {idEditando === produto.id ? (
+                                    // Modo edição: exibe inputs para alterar nome, descrição e preço
                                     <div className="p-4 flex flex-col gap-3 bg-zinc-950 h-full">
                                         <h4 className="text-amber-500 font-bold text-sm">Editando #{produto.id}</h4>
-                                        <input 
+                                        <input
                                             className="w-full border border-zinc-700 p-2 rounded bg-zinc-900 text-white text-sm"
                                             type="text" defaultValue={produto.nome}
                                             onChange={(e) => setEditNome(e.target.value)}
                                         />
-                                        <textarea 
+                                        <textarea
                                             className="w-full border border-zinc-700 p-2 rounded bg-zinc-900 text-white text-sm h-16"
                                             defaultValue={produto.descricao}
                                             onChange={(e) => setEditDesc(e.target.value)}
                                         />
-                                        <input 
+                                        <input
                                             className="w-full border border-zinc-700 p-2 rounded bg-zinc-900 text-white text-sm"
                                             type="number" defaultValue={produto.valor}
                                             onChange={(e) => setEditPreco(e.target.value === "" ? "" : Number(e.target.value))}
@@ -245,6 +279,7 @@ export function ProductRegistration() {
                                         </div>
                                     </div>
                                 ) : (
+                                    // Modo visualização: exibe imagem, nome, preço e ações
                                     <>
                                         <div className="relative h-40">
                                             <img className="w-full h-full object-cover" src={produto.imagem} alt={produto.nome} />
@@ -255,6 +290,7 @@ export function ProductRegistration() {
                                             <p className="text-zinc-500 text-xs line-clamp-2 mt-1">{produto.descricao}</p>
                                             <p className="mt-4 font-bold text-emerald-400 text-xl">R$ {produto.valor.toFixed(2).replace('.', ',')}</p>
                                             <div className="mt-auto pt-4 flex gap-2">
+                                                {/* Botão editar: preenche os estados de edição com os valores atuais do produto */}
                                                 <button
                                                     className="grow bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold py-2 rounded-lg transition-colors"
                                                     onClick={() => {
@@ -265,7 +301,7 @@ export function ProductRegistration() {
                                                     }}
                                                 >
                                                     EDITAR
-                                                </button> 
+                                                </button>
                                                 <button
                                                     className="px-3 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white py-2 rounded-lg transition-all"
                                                     onClick={() => deletarProduto(produto.id)}
