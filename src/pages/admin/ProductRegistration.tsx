@@ -209,14 +209,7 @@ export function ProductRegistration() {
                             </div>
 
                             <div className="bg-zinc-950 p-5 rounded-xl border border-zinc-800">
-                      
-
-/**
- * Página de catálogo visível ao cliente.
- * Exibe barra de pesquisa, categorias e grid de produtos.
- *
- * Suporta tema claro/escuro com base na preferência salva no localStorage
-           <p className="text-zinc-500 text-xs uppercase font-bold">Última Adição</p>
+                                <p className="text-zinc-500 text-xs uppercase font-bold">Última Adição</p>
                                 <p className="text-lg font-bold text-white truncate">{ultimoAdicionado}</p>
                             </div>
 

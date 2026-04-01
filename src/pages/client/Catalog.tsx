@@ -1,6 +1,7 @@
 import * as Icons from 'lucide-react';
 import { Search } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import type { Produto, Categoria } from '../../types/produto';
 import { prod, cat } from '../../types/produto';
 
@@ -80,8 +81,9 @@ export function Catalog() {
                 {/* Grid de produtos: 2 colunas fixas dentro do container estreito */}
                 <div className='grid grid-cols-2 gap-4'>
                     {produtos.map((produto) => (
-                        <div
+                        <Link
                             key={produto.id}
+                            to={`/Product/${produto.id}`}
                             className='bg-white dark:bg-slate-900 rounded-2xl border border-zinc-100 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-all'
                         >
                             <img
@@ -106,7 +108,7 @@ export function Catalog() {
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>
